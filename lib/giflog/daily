@@ -1,0 +1,14 @@
+#Herein are scripts to be called from giflog.
+#
+#Each script should have a function named same as filename. Up to two parameters are passed through to this function. 
+
+daily () {
+    # fit the daily symlinks
+    cd $BASEDIR
+    [ -h $BASEDIR/yesterday ] && rm $BASEDIR/yesterday
+    [ -h $BASEDIR/today ] && mv $BASEDIR/today $BASEDIR/yesterday
+    ln -s $CHRONODIR $BASEDIR/today
+
+    # delete some old stuff
+    find $BASEDIR -mindepth 2 -type d -mtime +90 | xargs -r rm -rf
+}

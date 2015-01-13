@@ -1,0 +1,7 @@
+#Herein are scripts to be called from giflog.
+#
+#Each script should have a function named same as filename. Up to two parameters are passed through to this function. 
+
+README () {
+	grep "^#" $LIBDIR/README | cut -c 2-
+}

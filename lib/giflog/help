@@ -1,0 +1,5 @@
+help() {
+    echo "I should write up some help... "
+    echo "Valid libs are:"
+    ls -l $LIBDIR/
+}

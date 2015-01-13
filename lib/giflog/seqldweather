@@ -1,0 +1,68 @@
+# this composites multiple rain radar and storm tracker images, and animates them
+
+seqldweather() {
+	do_log "|(cvt) compositing storm and radar"
+	rname=seqldweather.png
+	tname="${YEAR}-${MONTH}-${DAY}T${TIME}_${rname}"
+	tfile="${TDIR}/$tname"
+
+# this gets the three images composited with right geometry, but not yet colours
+#convert -size 642x644 xc:white \( radar-marbung128km.gif -crop 512x512+6+6 \) -geometry +0+63 -composite \( radar-stapylton128km.gif -crop 512x542+6+22 \) -geometry +138+103 -composite \( thunderstorms-seqld.png -resize 504x501\! -compose multiply \) -geometry +26+0 -composite out.gif
+
+# this fades the black of the thunderstorms out
+#convert -size 642x644 xc:white \( radar-marbung128km.gif -crop 512x512+6+6 \) -geometry +0+63 -composite \( radar-stapylton128km.gif -crop 512x542+6+22 \) -geometry +138+103 -composite \( thunderstorms-seqld.png -fuzz 50% -fill '#c0c0c0' -opaque black -resize 504x501\! -compose multiply \) -geometry +26+0 -composite out.gif
+
+# this turns the date at the top inverse now...
+#convert -size 642x644 xc:white \( radar-marbung128km.gif -crop 512x512+6+6 \) -geometry +0+63 -composite \( radar-stapylton128km.gif -crop 512x542+6+22 \) -geometry +138+103 -composite \( thunderstorms-seqld.png -fuzz 50% -fill '#c0c0c0' -opaque black -fuzz 0% -fill black -opaque '#dfedf7' -resize 504x501\! -compose multiply \) -geometry +26+0 -composite out.png
+
+# this turns thunderstorms white, and their borders and predictions black. All done?
+#	convert -size 642x644 xc:white \( radar-marbung128km.gif -crop 512x512+6+6 \) -geometry +0+63 -composite \( radar-stapylton128km.gif -crop 512x542+6+22 \) -geometry +138+103 -composite \( thunderstorms-seqld.png -fuzz 50% -fill '#c0c0c0' -opaque black -fuzz 0% -fill black -opaque '#dfedf7' -fill white -opaque '#f5bd8a' -fuzz 5% -fill black -opaque '#cc7833' -fuzz 4% -opaque '#e9a970'  -resize 504x501\! -compose multiply \) -geometry +26+0 -composite seqldweather.png
+
+# here we add colour reduction to 192 cols. This has next to no visual difference, yet reduces final (post pngcrush) size by 66%)
+#	convert -size 642x644 xc:white \( $LASTDIR/radar-marbung128km.gif -crop 512x512+6+6 \) -geometry +0+63 -composite \( $LASTDIR/radar-stapylton128km.gif -crop 512x542+6+22 \) -geometry +138+103 -composite \( $LASTDIR/thunderstorms-seqld.png -fuzz 50% -fill '#c0c0c0' -opaque black -fuzz 0% -fill black -opaque '#dfedf7' -fill white -opaque '#f5bd8a' -fuzz 5% -fill black -opaque '#cc7833' -fuzz 4% -opaque '#e9a970'  -resize 504x501\! -compose multiply \) -geometry +26+0 -composite -dither none -colors 192 ${TDIR}/_tmp_seqldweather.png
+
+# redo the colour swappings for thunderstorm-seqld.png
+#	convert -size 642x644 xc:white \( $LASTDIR/radar-marbung128km.gif -crop 512x512+6+6 \) -geometry +0+63 -composite \( $LASTDIR/radar-stapylton128km.gif -crop 512x542+6+22 \) -geometry +138+103 -composite \( $LASTDIR/thunderstorms-seqld.png -fill '#c0c0c0' -fuzz 50% -opaque black -fuzz 5% -opaque '#ad784e' -fill white -fuzz 0% -opaque '#f5bd8a' -opaque '#e5bc99' -fill black -fuzz 7% -opaque '#dfedf7' -opaque '#eaa96f' -fuzz 25% -opaque '#cc7833' -resize 504x501\! -compose multiply \) -geometry +26+0 -composite -dither none -colors 192 ${TDIR}/_tmp_seqldweather.png
+
+# wacky note: originally outputting to _tmp_${tname} but apparently variable expansion in the final filename changed the behaviour of the final composit. WTF?
+#...therefore, keep it as a static name here (and pngcrush later :)
+	convert -size 642x644 xc:white \( $LASTDIR/radar-marbung128km.gif -crop 512x512+6+6 \) -geometry +0+63 -composite \( $LASTDIR/radar-stapylton128km.gif -crop 512x542+6+22 \) -geometry +138+103 -composite \( $LASTDIR/thunderstorms-seqld.png -fill '#c0c0c0' -fuzz 50% -opaque black -fuzz 5% -opaque '#ad784e' -fill white -fuzz 0% -opaque '#f5bd8a' -opaque '#e5bc99' -fill black -opaque '#dfedf7' -fuzz 7% -opaque '#eaa96f' -fuzz 25% -opaque '#cc7833' -resize 504x501\! -compose multiply \) -geometry +26+0 -composite -dither none -colors 192 ${TDIR}/_tmp_seqldweather.png
+#	mv $TDIR/_tmp_$tname $tfile 
+	pngcrush -q $TDIR/_tmp_seqldweather.png $tfile && rm $TDIR/_tmp_seqldweather.png
+	# do_diff checks for uniqueness, and logs, updates html if needed, etc
+	do_diff
+	sleep 5
+	seqldweather_gif
+}
+
+# it'd be nice if this could be passed a param for number of frames to make
+seqldweather_gif () {
+        HOUR=${TIME%%:*}
+	do_log "|(cvt) baking a gif"
+	rname=seqldweather_anim.gif
+	tname="${YEAR}-${MONTH}-${DAY}T${TIME}_${rname}"
+	tfile="${TDIR}/$tname"
+	# the oldfile is previous versions from this same hour
+	oldfile="${TDIR}/${YEAR}-${MONTH}-${DAY}T${TIME%%:*}*_${rname}"
+	rm $oldfile  2>/dev/null
+	if [ $((${HOUR#0*}%2)) -eq 1 ] ; then
+	    # it's an odd hour, let's remove the previous even hour versions too
+	    case $((${HOUR#0}-1)) in
+		??)
+		    oldfile2="${TDIR}/${YEAR}-${MONTH}-${DAY}T$((${HOUR#0*}-1))*_${rname}"
+		    ;;
+		?)
+		    oldfile2="${TDIR}/${YEAR}-${MONTH}-${DAY}T0$((${HOUR#0*}-1))*_${rname}"
+		    ;;
+	    esac
+	    rm $oldfile2 2>/dev/null
+        fi
+
+	convert -loop 0 $(find $BASEDIR/today/ $BASEDIR/yesterday/ -type f -iname \*seqldweather.png -mmin -300 | sort -t/ -k2 | tail -n 16) $TDIR/_tmp_seqldweather_anim.gif
+	# Original main sequence delay was 15
+	# 2014 Dec 09 - after FB thread, slowed to delay=20
+	gifsicle $TDIR/_tmp_seqldweather_anim.gif -O3 -k 64 -d50 "#0" -d20 "#1" "#2" "#3" "#4" "#5" "#6" "#7" "#8" "#9" "#10" "#11" "#12" "#13" "#14" -d 100 "#15" -o $tfile
+	rm $TDIR/_tmp_seqldweather_anim.gif
+
+	do_diff
+}

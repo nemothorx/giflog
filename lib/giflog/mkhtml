@@ -1,0 +1,89 @@
+# make some html. 
+
+# $1 empty it'll just do the day header for today (terminal default)
+#   ...unless $rname exists, in which case it does that image's html for today (called-from-giflog.sh default)
+
+# alternatively, provide a day in form 'YYYY/MM/DD' as $1 to generate day header for arbitrary day
+# ...or $2 as a saved filename suffix (ie, rname) to do the per-image summary for that day
+
+# alternatively, $1 as month in form 'YYYY/MM' -> do month html summary
+
+# OR! ... $1 as 'last' and it'll generate html summary for the "last" symlinks  (? is one needed?)
+
+
+################ some sub-functions... 
+
+mkh_reqhtml () {
+    THTMLFILE="$HDIR/${hname%.*}.html"
+    findlist=$(find $HDIR -type f -iname \*$hname -printf '<a href="./%f"><img height=96 src="./%f" title="%f"></a>\n' | sort)
+    if [ -n "$findlist" ] ; then
+        do_log "/(htm) $THTMLFILE"
+        (echo "<!DOCTYPE html><html><body>"
+        echo "<h1>$hname on $YEAR/$MONTH/$DAY</h1>"
+        echo "$findlist"
+	echo "</body></html>" ) > $THTMLFILE
+    else
+        do_log "!(err) No files match $HDIR/*$hname ...No html created/updated"
+    fi
+}
+
+mkh_header() {
+    htype=$1
+    do_log "/(htm) $htype header for $HDIR"
+    ( echo -e "Images for a $htype.\n<br>Most recent shown (Mouseover shows oldest)<br>"
+    # note: current working is for day headers. month headers should be the same but for the breadcrumbs and html links
+    flist=$(find -L $HDIR -type f -not -iname \*html -not -iname \.\* -printf '%p\n' | sed -e "s^$HDIR/^^g" | sort)
+    for rname in $(echo "$flist" | cut -d_ -f 2- | sort | uniq) ; do
+	# this feels REALLY ugly. 
+	(echo "$flist" | grep "$rname" | sed -n '1p;$p' | tr '\n' ' ' ; echo "") | while read old new ; do
+	# todo: make this cleverer about months
+	htmlfile=${rname%.*}.html
+	# TODO: bug - html links don't work for month mode. 
+	#   solution: keep the links where they point, but generate htmls in those locations 
+	if [ "$mkh1" == "last" ] ; then
+	    rpath=$(dirname $(realpath $LASTDIR/$new))
+	    htmlfile=../$(echo "${rpath}" | sed -e "s^$BASEDIR/^^g" )/${new%.*}.html
+	fi
+	echo "<a href='$htmlfile'><img height=128 title='${new%.*}' src='./$new' onmouseover=\"this.src='./$old';\" onmouseout=\"this.src='./$new';\"/></a>"
+	done
+    done ) > $HDIR/.header
+}
+
+# this is our core function
+mkhtml() {
+    mkh1=$1	# "header", an rname, or a month/day date
+    mkh2=$2	# when mkh1 is a date, this is the header or rname
+    # let's operate on a hname file in a HTML DIR... default to rname in TDIR
+    hname=$rname
+    HDIR=$TDIR
+
+# if there is no param, we default like this (header defaults to today)
+    if [ -z "$mkh1" ] ; then
+	[ -n "$hname" ] && mkh_reqhtml || mkh_header day
+	return
+    fi
+
+# otherwise we assume to have a $1... (note: function is y3k incompatible)
+    case $mkh1 in
+	# give me a day (note: can NOT end in / for reasons later on
+	2???/??/??|last)
+	    [ ! -d $BASEDIR/$mkh1 ] && do_log "!(err) $mkh1 does not exist" && return 
+	    # now change what our HDIR is, and move on... 
+	    HDIR=$BASEDIR/$mkh1
+	    # if $mkh2 exists, assume it's a requested image log and create reqhtml for that. Otherwise, header
+	    [ -n "$mkh2" ] && hname=$mkh2 && mkh_reqhtml || mkh_header day
+	    ;;
+	# give me a month
+	2???/??)
+	    [ ! -d $BASEDIR/$mkh1 ] && do_log "!(err) $mkh1 does not exist" && return 
+	    # now change what our TDIR is, and move on... 
+	    HDIR=$BASEDIR/$mkh1
+	    mkh_header month
+	    ;;
+	*)
+	    do_log "!(err) mkhtml got an unknown options: $*"
+    esac
+
+}
+
+

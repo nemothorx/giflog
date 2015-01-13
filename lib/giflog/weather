@@ -1,0 +1,69 @@
+# this generates the .header for pub.thorx.net/weather
+
+# this function takes a filename - assumed (should be paranoid and check) to be a filename in $LASTDIR
+# ...it extracts the realpath,a nd removed $INVBASEDIR, returning a path that is permalink usable
+lastpath2permalink() {
+    req=$1
+    realpath $LASTDIR/$req | sed -e "s^\($INVBASEDIR\)\(.*\)^\2^g"
+}
+
+weather() {
+    echo "Thorx weather report for SE QLD
+<br>
+<br>
+This is work in progress.
+<br>
+<table align=center>
+<tr>
+    <td>
+<a href='/giflog/last/seqldweather_anim.gif'><img src='/giflog/last/seqldweather_anim.gif'</a>
+<br>
+<a href='$(lastpath2permalink seqldweather_anim.gif)'>Permalink for this specific image</a> - <a href='/giflog/last/seqldweather_anim.gif'>Permalink to most recent image</a>
+<hr>
+<br>
+<a href='/giflog/last/seqldweather.png'><img width=320 src='/giflog/last/seqldweather.png'></a>
+<a href='/giflog/last/SHGMSCOL.JPG'><img width=320 src='$(lastpath2permalink SHGMSCOL.JPG)'></a>
+<br>
+<a href='/giflog/last/bom-seqld.gif'><img width=320 src='$(lastpath2permalink bom-seqld.gif)'></a>
+<a href='/giflog/last/bom-qld.gif'><img width=320 src='$(lastpath2permalink bom-qld.gif)'></a>
+<br>
+<a href='/giflog/last/heatmap_au-region.png'><img width=320 src='$(lastpath2permalink heatmap_au-region.png)'></a>
+<a href='/giflog/last/bom-nsw.gif'><img width=320 src='$(lastpath2permalink bom-nsw.gif)'></a>
+<br>
+<a href='/giflog/last/heatmap_world.png'><img width=320 src='$(lastpath2permalink heatmap_world.png)'></a>
+<a href='/giflog/last/maxtemp_aus.gif'><img width=320 src='$(lastpath2permalink maxtemp_aus.gif)'></a>
+    </td>
+    <td valign=top>
+<a class=\"twitter-timeline\" href=\"https://twitter.com/hashtag/thorxweather\" data-widget-id=\"543226495854858243\">#thorxweather Tweets</a>
+<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+\"://platform.twitter.com/widgets.js\";fjs.parentNode.insertBefore(js,fjs);}}(document,\"script\",\"twitter-wjs\");</script>
+
+<br>
+
+<a class=\"twitter-timeline\" href=\"https://twitter.com/ThorxWeather\" data-widget-id=\"543200918666113024\">Tweets by @ThorxWeather</a>
+<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+\"://platform.twitter.com/widgets.js\";fjs.parentNode.insertBefore(js,fjs);}}(document,\"script\",\"twitter-wjs\");</script>
+    </td>
+</tr>
+</table>
+<pre>
+Also... 
+<a href='http://www.bellmereweather.net/'>http://www.bellmereweather.net/</a>
+<a href='http://www.bellmereweather.net/Lightning.asp'>http://www.bellmereweather.net/Lightning.asp</a>
+<a href='http://www.bellmereweather.net/StormData/LiveStormMapImage.jpg'>http://www.bellmereweather.net/StormData/LiveStormMapImage.jpg</a>
+<a href='http://www.bellmereweather.net/MTSatPics/MCIRNegWorld.asp'>http://www.bellmereweather.net/MTSatPics/MCIRNegWorld.asp</a>
+<a href='http://www.bellmereweather.net/ChartLocalTempGrad.asp'>http://www.bellmereweather.net/ChartLocalTempGrad.asp</a>
+<a href='http://www.bellmereweather.net/ChartAusTempGrad.asp'>http://www.bellmereweather.net/ChartAusTempGrad.asp</a>
+<a href='http://www.bellmereweather.net/MTSatPics/MCIRNegSlideShowAustralia.asp'>http://www.bellmereweather.net/MTSatPics/MCIRNegSlideShowAustralia.asp</a>
+<a href='http://www.bellmereweather.net/MTSatPics/MCIRNegSlideShowAustralia.asp'>http://www.bellmereweather.net/MTSatPics/MCIRNegSlideShowAustralia.asp</a>
+<a href='http://www.bellmereweather.net/MTSatPics/VISSlideShowAustralia.asp'>http://www.bellmereweather.net/MTSatPics/VISSlideShowAustralia.asp</a>
+<a href='http://www.bellmereweather.net/MTSatPics/VISSlideShowQueensland.asp'>http://www.bellmereweather.net/MTSatPics/VISSlideShowQueensland.asp</a>
+<a href='http://www.bellmereweather.net/MTSatPics/SouthernOceanSlideShow.asp'>http://www.bellmereweather.net/MTSatPics/SouthernOceanSlideShow.asp</a>
+<a href='http://www.bellmereweather.net/MTSatPics/EquatorSlideShow.asp'>http://www.bellmereweather.net/MTSatPics/EquatorSlideShow.asp</a>
+<a href='http://www.bellmereweather.net/CycloneTimeLapse.asp?units=C'>http://www.bellmereweather.net/CycloneTimeLapse.asp?units=C</a>
+<a href='http://www.lorrigan.com.au/index.php'>http://www.lorrigan.com.au/index.php</a>
+<a href='http://www.lorrigan.com.au/stormwatch.php'>http://www.lorrigan.com.au/stormwatch.php</a>
+<a href='http://www.weatherzone.com.au/models/'>http://www.weatherzone.com.au/models/</a>
+<a href='http://www.weathercamnetwork.com.au/'>http://www.weathercamnetwork.com.au/</a>
+
+
+</pre>" > $INVBASEDIR/weather/.header
+}

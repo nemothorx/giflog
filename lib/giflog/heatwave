@@ -1,0 +1,18 @@
+# http://www.bom.gov.au/australia/heatwave/
+#
+heatwave() {
+    # each day, there are 7 images available. Filenames calculatable by date
+    # each image shows a 3 day assessment, with the final day being the filename date
+    # ie, there are two images of past days, and 5 forecast days
+    # ... but the names are "today" and the following 6 days
+
+    for offset in {0..6} ; do
+	d=$(date -d "today +${offset}day" +%Y%m%d)
+	echo "/home/nemo/bin/giflog.sh http://www.bom.gov.au/fwo/IDY10008.${d}.png heatwave-day${offset}.png"
+	# TODO: check if each exists before giflogging again
+	# ... check if success, else try a second time?
+    done
+
+    find $TDIR -type f -iname heatwave\*
+    # TODO: check if we have 7, if so, assemble a gif (how?!)
+}
