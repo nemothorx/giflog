@@ -4,7 +4,7 @@
 # ...it extracts the realpath,a nd removed $INVBASEDIR, returning a path that is permalink usable
 lastpath2permalink() {
     req=$1
-    realpath $LASTDIR/$req | sed -e "s^\($INVBASEDIR\)\(.*\)^\2^g"
+    [ -r $LASTDIR/$req ] && realpath $LASTDIR/$req | sed -e "s^\($INVBASEDIR\)\(.*\)^\2^g"
 }
 
 weather() {
