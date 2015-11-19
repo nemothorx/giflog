@@ -8,11 +8,14 @@ heatwave() {
 
     for offset in {0..6} ; do
 	d=$(date -d "today +${offset}day" +%Y%m%d)
-	echo "/home/nemo/bin/giflog.sh http://www.bom.gov.au/fwo/IDY10008.${d}.png heatwave-day${offset}.png"
+
+	# I prefer $d in the image name, but it will fil up the 'last' folder unescessarily. $offset keeps last clean, but makes less useful direct names
+#	/home/nemo/bin/giflog.sh http://www.bom.gov.au/fwo/IDY10008.${d}.png heatwave-${d}.png
+#	/home/nemo/bin/giflog.sh http://www.bom.gov.au/fwo/IDY10008.${d}.png heatwave-day${offset}.png
 	# TODO: check if each exists before giflogging again
 	# ... check if success, else try a second time?
     done
 
-    find $TDIR -type f -iname heatwave\*
+    # find $TDIR -type f -iname heatwave\*
     # TODO: check if we have 7, if so, assemble a gif (how?!)
 }
