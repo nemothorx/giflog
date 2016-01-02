@@ -10,5 +10,6 @@ daily () {
     ln -s $CHRONODIR $BASEDIR/today
 
     # delete some old stuff
-    find $BASEDIR -mindepth 2 -type d -mtime +90 | xargs -r rm -rf
+    #	# was 90 days, now it's 10 weeks --20160103
+    find $BASEDIR -mindepth 2 -type d -mtime +70 | xargs -r rm -rf
 }
