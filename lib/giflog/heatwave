@@ -9,13 +9,67 @@ heatwave() {
     for offset in {0..6} ; do
 	d=$(date -d "today +${offset}day" +%Y%m%d)
 
-	# I prefer $d in the image name, but it will fil up the 'last' folder unescessarily. $offset keeps last clean, but makes less useful direct names
+	# I prefer $d in the image name, but it will fill up the 'last' folder unescessarily. $offset keeps last clean, but makes less useful direct names
 #	/home/nemo/bin/giflog.sh http://www.bom.gov.au/fwo/IDY10008.${d}.png heatwave-${d}.png
-#	/home/nemo/bin/giflog.sh http://www.bom.gov.au/fwo/IDY10008.${d}.png heatwave-day${offset}.png
+	/home/nemo/bin/giflog.sh http://www.bom.gov.au/fwo/IDY10008.${d}.png heatwave-day${offset}.png
 	# TODO: check if each exists before giflogging again
 	# ... check if success, else try a second time?
     done
 
-    # find $TDIR -type f -iname heatwave\*
-    # TODO: check if we have 7, if so, assemble a gif (how?!)
+    heatwave_gif today
+}
+
+# find $TDIR -type f -iname heatwave\*
+# TODO: check if we have 7, if so, assemble a gif
+# gif to have two sections (in serial, or in parallel?)
+# 1. predictions *OF* today (ie, day 6, 5, 4, 3, 2, 1, 0 from the last 7 days
+# 2. predictions *MADE* today (ie, day 0, 1, 2, 3, 4, 5, 6 from today)
+heatwave_gif() {
+    # $1 is the date to generate the heatwave giflog for
+    date=${1:-today}
+    hdate=$(date -d "$date" "+%a %d/%b/%Y")
+    do_log "|(cvt) baking a gif for $hdate"
+    rname=heatwave_anim.gif
+
+    # override these in case we're generating from the past
+    YEAR=$(date -d "$date" +%Y)
+    MONTH=$(date -d "$date" +%m)
+    DAY=$(date -d "$date" +%d)
+    TIME=$(date +%T)
+    CHRONODIR=$YEAR/$MONTH/$DAY
+    TDIR="$BASEDIR/$CHRONODIR"
+
+    tname="${YEAR}-${MONTH}-${DAY}T${TIME}_${rname}"
+    tfile="${TDIR}/$tname"
+
+    # 7 days to process
+    for day in {0..6} ; do
+	age=$((6-day))
+
+	# predictions for $date
+	for[$day]=$(ls -1 $BASEDIR/$(date -d "$date -$age days" +%Y/%m/%d)/*heatwave-day${age}.png)
+	# predictions made on $date for the future
+	by[$day]=$(ls -1 $BASEDIR/$(date -d "$date" +%Y/%m/%d)/*heatwave-day${day}.png)
+	# assessments leading up to $date
+	to[$day]=$(ls -1 $BASEDIR/$(date -d "$date -$age days" +%Y/%m/%d)/*heatwave-day0.png)
+    done
+
+    for f in {0..6} ; do
+	montage -title "Heatwave analysis on $hdate" -pointsize 32 -label "Prior forecasts for $hdate" ${for[$f]} -label "Assessments prior to $hdate" ${to[$f]} -geometry '1x1<+1+1' $TDIR/_tmp_heatwave_${f}.gif
+	frame[$f]="$TDIR/_tmp_heatwave_${f}.gif"
+    done
+    for f in {0..6} ; do
+	montage -title "Heatwave analysis on $hdate" -pointsize 32 -label "Current assessment for $hdate" ${for[6]} -label "Forecasts from $hdate" ${by[$f]} -geometry '1x1<+1+1' $TDIR/_tmp_heatwave_$((f+7)).gif
+	frame[$((f+7))]="$TDIR/_tmp_heatwave_$((f+7)).gif"
+    done
+    # final frames again (easier to repeat frame than tweak frame timing. gifsicle will optimise it into one frame anyway)
+    frame[14]="$TDIR/_tmp_heatwave_13.gif"
+    frame[15]="$TDIR/_tmp_heatwave_13.gif"
+    frame[16]="$TDIR/_tmp_heatwave_0.gif"
+    convert -loop 0 -delay 50 ${frame[@]} $TDIR/_tmp_heatwave_anim.gif
+    gifsicle $TDIR/_tmp_heatwave_anim.gif -O3 -k 16 -o $tfile
+    rm $TDIR/_tmp_heatwave*
+
+    # cleanup etc
+    do_diff
 }

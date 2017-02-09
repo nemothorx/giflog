@@ -20,6 +20,9 @@ This is work in progress.
 <br>
 <a href='$(lastpath2permalink seqldweather_anim.gif)'>Permalink for this specific image</a> - <a href='/giflog/last/seqldweather_anim.gif'>Permalink to most recent image</a>
 <hr>
+<a href='/giflog/last/heatwave_anim.gif'><img width=640 src='/giflog/last/heatwave_anim.gif'</a>
+<br>
+<hr>
 <br>
 <a href='/giflog/last/seqldweather.png'><img width=320 src='/giflog/last/seqldweather.png'></a>
 <a href='/giflog/last/SHGMSCOL.JPG'><img width=320 src='$(lastpath2permalink SHGMSCOL.JPG)'></a>
