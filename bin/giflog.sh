@@ -12,7 +12,10 @@
 # however, images are md5sum'd against the previous save, and discarded if
 # identical
 
-# we should make some .index htmls (for i.php) too
+# TODO
+# we should make some .index htmls (for i.php) too?
+# should we use FTP to source data?
+#   ftp://ftp.bom.gov.au/anon/gen/gms/
 
 LOGFILE=$HOME/var/log/giflog.log
 LIBDIR=$HOME/lib/giflog/
@@ -73,7 +76,7 @@ mkdir -p "$TDIR"
 
 case $req in
 	http://*|https://*)
-		sleep $startdelay
+		[ -t 0 ] || sleep $startdelay
 		[ -n "$2" ] && rname=$2 || rname=${req##*/}
 		imopts=$3
 		;;
@@ -81,7 +84,7 @@ case $req in
 		if [ -f "$LIBDIR/$req" ] ; then
 			do_log "*(fct) $req"
 			source "$LIBDIR/$req" 
-			$req $2 $3
+			$req "$2" "$3"
 		else
 			do_log "!(bad) library request fail for $req"
 		fi
