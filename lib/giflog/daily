@@ -12,5 +12,7 @@ daily () {
     # delete some old stuff
     #	# was 90 days, now it's 10 weeks --20160103
     #	# now it's 8 weeks --20170528
-    find $BASEDIR -mindepth 2 -type d -mtime +56 | xargs -r rm -rf
+    #	# now it's 7 --20190401
+    #	# now it's 5 --20190415
+    find $BASEDIR -mindepth 2 -type d -mtime +35 | xargs -r rm -rf
 }
