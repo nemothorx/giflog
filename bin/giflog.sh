@@ -105,6 +105,7 @@ case $reqcode in
 		cont=yes
 		;;
 	2*)
+		do_log ":($reqcode) $reqcode2"
 		cont=yes
 		;;
 	3*)
@@ -121,10 +122,23 @@ esac
 # continue?
 [ "$cont" != "yes" ] && exit 1
 
-if [ -n "$imopts" ] ; then
-	do_log "|(cvt) $imopts"
+[ ! -s $tfile ] && do_log ":(siz) file zero size" && exit 1
+
+
+do_log "|(cvt) $imopts"
+case $imopts in
+    b64)
+	# base64 shenanigans found
+	# need to pull the base64 data from $tfile
+	mv $tfile $TDIR/_tmp_$rname
+	cat $TDIR/_tmp_$rname | grep -m 1 -i -o "src=\"data:image.*" | sed -e 's/.*,\(.*\)">/\1/g' | /usr/bin/base64 -d > $tfile
+	rm $TDIR/_tmp_$rname
+	;;
+    *)
+#	echo "convert $tfile $imopts $TDIR/_tmp_$rname && mv $TDIR/_tmp_$rname $tfile"
 	convert $tfile $imopts $TDIR/_tmp_$rname && mv $TDIR/_tmp_$rname $tfile
-fi
+	;;
+esac
 
 # do_diff runs through the final checks to see if we're different to last time :)
 do_diff
