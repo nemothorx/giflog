@@ -14,5 +14,6 @@ daily () {
     #	# now it's 8 weeks --20170528
     #	# now it's 7 --20190401
     #	# now it's 5 --20190415
-    find $BASEDIR -mindepth 2 -type d -mtime +35 | xargs -r rm -rf
+    #	# now it's 3 --20200104
+    find $BASEDIR -mindepth 2 -type d -mtime +21 | xargs -r rm -rf
 }
