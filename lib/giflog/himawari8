@@ -11,6 +11,20 @@ himawari8() {
     #
     # file size: as low as 20k, as high as 400k? depending on time of day
     # eg: 22k for https://himawari8-dl.nict.go.jp/himawari8/img/D531106/1d/550/2018/09/18/125000_0_0.png
+    #
+    # also is available as a 1x1 tile (ie, whole hemisphere) in 1d, a 4x4 tile in the /4d/, and 16d and 20d directories appropriately for higher resolutions
+    # TODO: get hemisphere, and get various tiles of the 4d and 20d for australia zoom
+
+
+    # this mirror has colour corrected australia
+    # http://rammb.cira.colostate.edu/ramsdis/online/images/himawari-8/australia_true_color/australia_true_color_20200108034000.jpg
+    # ...but only 4 weeks of archives
+
+    do_log "|() "
+    rname=australia_true_color_20200108034000.jpg
+    tname="${YEAR}-${MONTH}-${DAY}T${TIME}_${rname}"
+    tfile="${TDIR}/$tname"
+
 
 }
 

@@ -2,4 +2,6 @@ help() {
     echo "I should write up some help... "
     echo "Valid libs are:"
     ls -l $LIBDIR/
+    echo ""
+    echo "Review ~/bin/giflog.sh for script environments or run giflog.sh debug"
 }
