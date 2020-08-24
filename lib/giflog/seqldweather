@@ -30,7 +30,7 @@ seqldweather() {
 #	...this is the same as previous, EXCEPT marburg is layered above stapylton
 #	convert -size 642x644 xc:white \( $LASTDIR/radar-stapylton128km.gif -crop 512x542+6+22 \) -geometry +138+103 -composite \( $LASTDIR/radar-marburg128km.gif -crop 512x512+6+6 \) -geometry +0+63 -composite \( $LASTDIR/thunderstorms-seqld.png -fill '#c0c0c0' -fuzz 50% -opaque black -fuzz 5% -opaque '#ad784e' -fill white -fuzz 0% -opaque '#f5bd8a' -opaque '#e5bc99' -fill black -opaque '#dfedf7' -fuzz 7% -opaque '#eaa96f' -fuzz 25% -opaque '#cc7833' -resize 504x501\! -compose multiply \) -geometry +26+0 -composite -dither none -colors 192 ${TDIR}/_tmp_seqldweather.png
 #	mv $TDIR/_tmp_$tname $tfile 
-	pngcrush -q $TDIR/_tmp_seqldweather.png $tfile && rm $TDIR/_tmp_seqldweather.png
+	pngcrush -s $TDIR/_tmp_seqldweather.png $tfile && rm $TDIR/_tmp_seqldweather.png
 	# do_diff checks for uniqueness, and logs, updates html if needed, etc
 	do_diff
 	sleep 5
