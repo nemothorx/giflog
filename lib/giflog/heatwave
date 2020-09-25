@@ -16,7 +16,8 @@ heatwave() {
 	# ... check if success, else try a second time?
     done
 
-    heatwave_gif today
+    # pick an arbitrary(?) from above and only gif if it was found...
+    [ -e "$TDIR/heatwave-day6.png" ] && heatwave_gif today
 }
 
 # find $TDIR -type f -iname heatwave\*
