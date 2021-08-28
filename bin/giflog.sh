@@ -95,7 +95,12 @@ tname="${YEAR}-${MONTH}-${DAY}T${TIME}_$rname"
 tfile="${TDIR}/$tname"
 
 do_log "?(get) $req"
-metadata=$(curl -s -D - $req -o $tfile)
+hdrfile="$HOME/var/cache/giflog/$reqtag"
+# CURLOPTS="-H 'User-Agent: Mozilla/5.0 Gecko/20100101 Firefox/91.0'"
+# not using $CURLOPTS because it seems to make -o be ignored and so the file ends up in "$err". wtf?
+err=$(curl -H 'User-Agent: Mozilla/5.0 Gecko/20100101 Firefox/91.0' -s -D $hdrfile $req -o $tfile)
+echo "$err" > ${hdrfile}_err
+metadata=$(cat $hdrfile)
 # TODO: check for a 404 (or any non-200) error and flag it) 4xx erros should resulty in deletion
 reqcode=$(echo "$metadata" | head -1 | cut -d' ' -f2)
 reqcode2=$(echo "$metadata" | head -1 | cut -d' ' -f3-)
@@ -114,7 +119,7 @@ case $reqcode in
 		;;
 	4*)
 		do_log ":($reqcode) $reqcode2"
-		rm "$tfile"
+		[ -e "$tfile" ] && rm "$tfile"
 		cont=no
 		;;
 esac
