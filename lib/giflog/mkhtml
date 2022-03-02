@@ -33,7 +33,8 @@ mkh_header() {
     ( echo -e "Images for a $htype.\n<br>Most recent shown (Mouseover shows oldest)<br>"
     # note: current working is for day headers. month headers should be the same but for the breadcrumbs and html links
     flist=$(find -L $HDIR -type f -not -iname \*html -not -iname \.\* -printf '%p\n' | sed -e "s^$HDIR/^^g" | sort)
-    for rname in $(echo "$flist" | cut -d_ -f 2- | sort | uniq) ; do
+#    for rname in $(echo "$flist" | cut -d_ -f 2- | sort | uniq) ; do # this fails on *_* names in "last"
+    for rname in $(echo "$flist" | sed -e 's/.*....-..-..T..:..:.._//g' | sort | uniq) ; do
 	# this feels REALLY ugly. 
 	(echo "$flist" | grep "$rname" | sed -n '1p;$p' | tr '\n' ' ' ; echo "") | while read old new ; do
 	# todo: make this cleverer about months
