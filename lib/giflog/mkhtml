@@ -30,7 +30,7 @@ mkh_reqhtml () {
 mkh_header() {
     htype=$1
     do_log "/(htm) $htype header for $HDIR"
-    ( echo -e "Images for a $htype.\n<br>Most recent shown (Mouseover shows oldest)<br>"
+    ( echo -e "Images for a $htype. <small>(html last generated $(date -R)</small><br>\nMost recent shown (mouseover to zoom)<br>\n<div style='text-align: center; width: 80%; margin-left: 10%; margin-right: 10%;' >"
     # note: current working is for day headers. month headers should be the same but for the breadcrumbs and html links
     flist=$(find -L $HDIR -type f -not -iname \*html -not -iname \.\* -printf '%p\n' | sed -e "s^$HDIR/^^g" | sort)
 #    for rname in $(echo "$flist" | cut -d_ -f 2- | sort | uniq) ; do # this fails on *_* names in "last"
@@ -45,9 +45,11 @@ mkh_header() {
 	    rpath=$(dirname $(realpath $LASTDIR/$new))
 	    htmlfile=../$(echo "${rpath}" | sed -e "s^$BASEDIR/^^g" )/${new%.*}.html
 	fi
-	echo "<a href='$htmlfile'><img height=128 title='${new%.*}' src='./$new' onmouseover=\"this.src='./$old';\" onmouseout=\"this.src='./$new';\"/></a>"
+	# echo "<a href='$htmlfile'><img height=160 title='${new%.*}' src='./$new' onmouseover=\"this.src='./$old';\" onmouseout=\"this.src='./$new';\"/></a>"
+	echo "<a href='$htmlfile'><img height=220 class=zoomimg title='${new%.*}' src='./$new' /></a>"
 	done
-    done ) > $HDIR/.header
+    done 
+    echo "</div>" ) > $HDIR/.header
 }
 
 # this is our core function
