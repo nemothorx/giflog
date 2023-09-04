@@ -37,13 +37,7 @@ This is work in progress.
 <a href='/giflog/last/maxtemp_aus.gif'><img width=320 src='$(lastpath2permalink maxtemp_aus.gif)'></a>
     </td>
     <td valign=top>
-<a class=\"twitter-timeline\" href=\"https://twitter.com/hashtag/thorxweather\" data-widget-id=\"543226495854858243\">#thorxweather Tweets</a>
-<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+\"://platform.twitter.com/widgets.js\";fjs.parentNode.insertBefore(js,fjs);}}(document,\"script\",\"twitter-wjs\");</script>
-
-<br>
-
-<a class=\"twitter-timeline\" href=\"https://twitter.com/ThorxWeather\" data-widget-id=\"543200918666113024\">Tweets by @ThorxWeather</a>
-<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+\"://platform.twitter.com/widgets.js\";fjs.parentNode.insertBefore(js,fjs);}}(document,\"script\",\"twitter-wjs\");</script>
+    X
     </td>
 </tr>
 </table>
