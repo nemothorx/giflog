@@ -1,0 +1,73 @@
+# this composites multiple rain radar and storm tracker images, and animates them
+
+senswweather() {
+	do_log "|(cvt) compositing storm and radar"
+	rname=senswweather.png
+	tname="${YEAR}-${MONTH}-${DAY}T${TIME}_${rname}"
+	tfile="${TDIR}/$tname"
+
+#   this is based on "variation #4" of the seqld image
+convert -size 750x750 xc:white \
+    \( $LASTDIR/radar-wagga512km.gif -crop 187x187+228+190 \
+        -fill '#a0a0a0' \
+            -fuzz 25% -opaque black \
+        -resize 750x750\! \) \
+    -geometry +0+0 -composite \
+    \( $LASTDIR/radar-wagga256km.gif -crop 375x375+143+119 \
+        -resize 750x750\! \
+        -fill '#808080' \
+            -fuzz 35% -opaque black \
+        -alpha set -channel A -evaluate set 50% +channel \
+    \) \
+    -geometry -99+0 -composite \
+    \( $LASTDIR/radar-cptflat128km.gif -crop 524x564+0+0 \
+        -fuzz 0% -transparent '#c0c0c0' \) \
+    -geometry +239+137 -composite \
+    -dither none -colors 192 \
+    ${TDIR}/_tmp_senswweather.png
+
+# add this within an image within a change to make it disappear for debugging?
+#  -fuzz 100% -transparent '#88a8888' \
+# maybe this will work too
+#  -alpha set -channel A -evaluate set 50% +channel \
+#	unsure if 0% or 100% is full transparent
+
+#	mv $TDIR/_tmp_$tname $tfile 
+	pngcrush -s $TDIR/_tmp_senswweather.png $tfile && rm $TDIR/_tmp_senswweather.png
+	# do_diff checks for uniqueness, and logs, updates html if needed, etc
+	do_diff
+	sleep 5
+	senswweather_gif
+}
+
+# it'd be nice if this could be passed a param for number of frames to make
+senswweather_gif () {
+        HOUR=${TIME%%:*}
+	do_log "|(cvt) baking a gif"
+	rname=senswweather_anim.gif
+	tname="${YEAR}-${MONTH}-${DAY}T${TIME}_${rname}"
+	tfile="${TDIR}/$tname"
+	# the oldfile is previous versions from this same hour
+	oldfile="${TDIR}/${YEAR}-${MONTH}-${DAY}T${TIME%%:*}*_${rname}"
+	rm $oldfile  2>/dev/null
+	if [ $((${HOUR#0*}%2)) -eq 1 ] ; then
+	    # it's an odd hour, let's remove the previous even hour versions too
+	    case $((${HOUR#0}-1)) in
+		??)
+		    oldfile2="${TDIR}/${YEAR}-${MONTH}-${DAY}T$((${HOUR#0*}-1))*_${rname}"
+		    ;;
+		?)
+		    oldfile2="${TDIR}/${YEAR}-${MONTH}-${DAY}T0$((${HOUR#0*}-1))*_${rname}"
+		    ;;
+	    esac
+	    rm $oldfile2 2>/dev/null
+        fi
+
+	convert -loop 0 $(find $BASEDIR/today/ $BASEDIR/yesterday/ -type f -iname \*senswweather.png -mmin -300 | sort -t/ -k6 | tail -n 16) $TDIR/_tmp_senswweather_anim.gif
+	# Original main sequence delay was 15
+	# 2014 Dec 09 - after FB thread, slowed to delay=20
+	gifsicle $TDIR/_tmp_senswweather_anim.gif -O3 -k 64 -d50 "#0" -d20 "#1" "#2" "#3" "#4" "#5" "#6" "#7" "#8" "#9" "#10" "#11" "#12" "#13" "#14" -d 100 "#15" -o $tfile
+	rm $TDIR/_tmp_senswweather_anim.gif
+
+	do_diff
+}
