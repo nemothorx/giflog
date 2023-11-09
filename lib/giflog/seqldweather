@@ -33,27 +33,37 @@ seqldweather() {
 #	convert -size 642x644 xc:white \( $LASTDIR/radar-stapylton128km.gif -crop 512x542+6+22 \) -geometry +138+103 -composite \( $LASTDIR/radar-marburg128km.gif -crop 512x512+6+6 \) -geometry +0+63 -composite \( $LASTDIR/thunderstorms-seqld.png -fill '#c0c0c0' -fuzz 50% -opaque black -fuzz 5% -opaque '#ad784e' -fill white -fuzz 0% -opaque '#f5bd8a' -opaque '#e5bc99' -fill black -opaque '#dfedf7' -fuzz 7% -opaque '#eaa96f' -fuzz 25% -opaque '#cc7833' -resize 504x501\! -compose multiply \) -geometry +26+0 -composite -dither none -colors 192 ${TDIR}/_tmp_seqldweather.png
 #	...this is variation #3, being without marburg at all (may 2023 - the radar is offline pending a few months work, and my "last" has expired off
 #convert -size 642x644 xc:white \( $LASTDIR/radar-stapylton128km.gif -crop 512x542+6+22 \) -geometry +138+103 -composite \( $LASTDIR/thunderstorms-seqld.png -fill '#c0c0c0' -fuzz 50% -opaque black -fuzz 5% -opaque '#ad784e' -fill white -fuzz 0% -opaque '#f5bd8a' -opaque '#e5bc99' -fill black -opaque '#dfedf7' -fuzz 7% -opaque '#eaa96f' -fuzz 25% -opaque '#cc7833' -resize 504x501\! -compose multiply \) -geometry +26+0 -composite -dither none -colors 192 ${TDIR}/_tmp_seqldweather.png
-#   ...this is variation #4. Now sized to 750x750, it adds in stapylton's 512 as a background scaled to suit, but does not yet add marburg back in (due in a week or so though). It's also formatted for readability! --Nemo 8/Nov/2023
+#   ...this is variation #4. Now sized to 750x750, it adds in stapylton's 256 as a background scaled to suit (also 512 though it's completely overridden by the 256, it's backup, though alignment should be rechecked). This does does not yet add marburg back in (due in a week or so though). It's also formatted for readability! --Nemo 9/Nov/2023
 convert -size 750x750 xc:white \
-    \( $LASTDIR/radar-stapylton512km.gif -crop 187x187+136+163 \
+    \( $LASTDIR/radar-stapylton512km.gif -crop 187x187+136+162 \
+        -fill '#a0a0a0' \
+            -fuzz 25% -opaque black \
         -resize 750x750\! \) \
-        -geometry +0+0 -composite \
-    \( $LASTDIR/radar-stapylton128km.gif -crop 524x564+0+0 \) \
-        -geometry +240+137 -composite \
+    -geometry +0+0 -composite \
+    \( $LASTDIR/radar-stapylton256km.gif -crop 375x375+11+62 \
+        -resize 750x750\! \
+        -fill '#808080' \
+            -fuzz 25% -opaque black
+	-alpha set -channel A -evaluate set 50% +channel \
+    \) \
+    -geometry +0+0 -composite \
+    \( $LASTDIR/radar-stapylton128km.gif -crop 524x564+0+0 \
+        -fuzz 0% -transparent '#c0c0c0' \) \
+    -geometry +239+137 -composite \
     \( $LASTDIR/thunderstorms-seqld.png \
-        -fill '#c0c0c0' -fuzz 50% \
-            -opaque black -fuzz 5% \
-            -opaque '#ad784e' \
-        -fill white -fuzz 0% \
-            -opaque '#f5bd8a' \
-            -opaque '#e5bc99' \
+        -fill '#c0c0c0' \
+            -fuzz 50% -opaque black \
+            -fuzz 5%  -opaque '#ad784e' \
+        -fill white \
+            -fuzz 0% -opaque '#f5bd8a' \
+                     -opaque '#e5bc99' \
         -fill black \
-            -opaque '#dfedf7' -fuzz 7% \
-            -opaque '#eaa96f' -fuzz 25% \
-            -opaque '#cc7833' \
+                      -opaque '#dfedf7' \
+            -fuzz 7%  -opaque '#eaa96f' \
+            -fuzz 25% -opaque '#cc7833' \
         -resize 504x501\! \
         -compose multiply \) \
-    -geometry +134+56 -composite -dither none -colors 192 \
+    -geometry +133+56 -composite -dither none -colors 192 \
     ${TDIR}/_tmp_seqldweather.png
 #
 
