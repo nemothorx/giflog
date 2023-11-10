@@ -17,7 +17,7 @@ heatwave() {
     done
 
     # pick an arbitrary(?) from above and only gif if it was found...
-    [ -e "$TDIR/heatwave-day6.png" ] && heatwave_gif today
+    [ -e "$TDIR/heatwave-day5.png" ] && heatwave_gif today
 }
 
 # find $TDIR -type f -iname heatwave\*
@@ -29,8 +29,8 @@ heatwave_gif() {
     # $1 is the date to generate the heatwave giflog for
     date=${1:-today}
     hdate=$(date -d "$date" "+%a %d/%b/%Y")
-    do_log "|(cvt) baking a gif for $hdate"
     rname=heatwave_anim.gif
+    do_log "|(cvt) baking a gif for $rname at $hdate"
 
     # override these in case we're generating from the past
     YEAR=$(date -d "$date" +%Y)
@@ -68,7 +68,7 @@ heatwave_gif() {
     frame[15]="$TDIR/_tmp_heatwave_13.gif"
     frame[16]="$TDIR/_tmp_heatwave_0.gif"
     convert -loop 0 -delay 50 ${frame[@]} $TDIR/_tmp_heatwave_anim.gif
-    gifsicle $TDIR/_tmp_heatwave_anim.gif -O3 -k 16 -o $tfile
+    gifsicle $TDIR/_tmp_heatwave_anim.gif -O3 -k 32 -o $tfile
     rm $TDIR/_tmp_heatwave*
 
     # cleanup etc
