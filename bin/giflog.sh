@@ -26,6 +26,7 @@ YEAR=$(date +%Y)
 MONTH=$(date +%m)
 DAY=$(date +%d)
 TIME=$(date +%T)
+TZONE=$(date +%Z)
 
 
 ################################# functions ###
