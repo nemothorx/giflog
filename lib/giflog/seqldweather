@@ -63,7 +63,12 @@ convert -size 750x750 xc:white \
             -fuzz 25% -opaque '#cc7833' \
         -resize 504x501\! \
         -compose multiply \) \
-    -geometry +133+56 -composite -dither none -colors 192 \
+    -geometry +133+56 -composite \
+    -pointsize 18 -gravity NorthWest \
+    -font /home/nemo/lib/fonts/MonaspaceRadon-WideMedium.otf \
+    -stroke '#0003' -strokewidth 4 -annotate +20+20 "${YEAR}-${MONTH}-${DAY} ${TIME} ${TZONE}" \
+    -stroke none    -fill '#F90F'  -annotate +20+20 "${YEAR}-${MONTH}-${DAY} ${TIME} ${TZONE}" \
+    -dither none -colors 192 \
     ${TDIR}/_tmp_seqldweather.png
 #
 
@@ -102,7 +107,9 @@ seqldweather_gif () {
 	convert -loop 0 $(find $BASEDIR/today/ $BASEDIR/yesterday/ -type f -iname \*seqldweather.png -mmin -360 | sort -t/ -k6 | tail -n 16) $TDIR/_tmp_seqldweather_anim.gif
 	# Original main sequence delay was 15
 	# 2014 Dec 09 - after FB thread, slowed to delay=20
-	gifsicle $TDIR/_tmp_seqldweather_anim.gif -O3 -k 64 -d50 "#0" -d20 "#1" "#2" "#3" "#4" "#5" "#6" "#7" "#8" "#9" "#10" "#11" "#12" "#13" "#14" -d 100 "#15" -o $tfile
+	gifsicle $TDIR/_tmp_seqldweather_anim.gif -O3 -k 64 -d50 "#0" -d20 "#1" "#2" "#3" "#4" "#5" "#6" "#7" "#8" "#9" "#10" "#11" "#12" "#13" "#14" -d 100 "#15" -o $TDIR/_tmp_seqldweather_anim2.gif
+	mv $TDIR/_tmp_seqldweather_anim2.gif $tfile
+
 	rm $TDIR/_tmp_seqldweather_anim.gif
 
 	do_diff
