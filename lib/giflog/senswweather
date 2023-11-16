@@ -70,7 +70,8 @@ senswweather_gif () {
 	convert -loop 0 $(find $BASEDIR/today/ $BASEDIR/yesterday/ -type f -iname \*senswweather.png -mmin -360 | sort -t/ -k6 | tail -n 16) $TDIR/_tmp_senswweather_anim.gif
 	# Original main sequence delay was 15
 	# 2014 Dec 09 - after FB thread, slowed to delay=20
-	gifsicle $TDIR/_tmp_senswweather_anim.gif -O3 -k 64 -d50 "#0" -d20 "#1" "#2" "#3" "#4" "#5" "#6" "#7" "#8" "#9" "#10" "#11" "#12" "#13" "#14" -d 100 "#15" -o $TDIR/_tmp_senswweather_anim2.gif
+	# 2023 Nov - changing to d30 in sync with seqldweather
+	gifsicle $TDIR/_tmp_senswweather_anim.gif -O3 -k 64 -d60 "#0" -d30 "#1" "#2" "#3" "#4" "#5" "#6" "#7" "#8" "#9" "#10" "#11" "#12" "#13" "#14" -d 120 "#15" -o $TDIR/_tmp_senswweather_anim2.gif
 	mv $TDIR/_tmp_senswweather_anim2.gif $tfile
 
 	rm $TDIR/_tmp_senswweather_anim.gif
