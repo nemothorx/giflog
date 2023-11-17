@@ -52,19 +52,28 @@ convert -size 750x750 xc:white \
         -alpha set -channel A -evaluate set 50% +channel \
     \) \
     -geometry +0+0 -composite \
-    \( $LASTDIR/radar-stapylton128km.gif -crop 524x564+0+0 \
+    \( $LASTDIR/radar-bneap128km.gif -crop 524x564+0+0 \
+        -fuzz 0% -transparent '#c0c0c0' \
+    \) \
+    -geometry +218+64 -composite \
+    \( $LASTDIR/radar-stapylton128km.gif -crop 524x542+0+22 \
         -fuzz 0% -transparent '#c0c0c0' \) \
-    -geometry +239+137 -composite \
-    \( $LASTDIR/radar-marburg128km.gif -crop 524x564+0+0 \
+    -geometry +239+159 -composite \
+    \( $LASTDIR/radar-marburg128km.gif -crop 524x496+0+22 \
         -fuzz 0% -transparent '#c0c0c0' \) \
-    -geometry +102+113 -composite \
+    -geometry +102+135 -composite \
     \( $LASTDIR/thunderstorms-seqld.png \
         -fill '#c0c0c0' \
             -fuzz 50% -opaque black \
-            -fuzz 5%  -opaque '#ad784e' \
         -fill white \
-            -fuzz 0% -opaque '#f5bd8a' \
-                     -opaque '#e5bc99' \
+            -fuzz 0% -opaque '#f2efe4' \
+                     -opaque '#dfedf7' \
+                     -opaque '#e5dec9' \
+                     -opaque '#bfdbee' \
+                     -opaque '#f2eee3' \
+                     -opaque '#deedf6' \
+                     -opaque '#f5bd8a' \
+		     -opaque '#efbc99' \
         -fill black \
                       -opaque '#dfedf7' \
             -fuzz 7%  -opaque '#eaa96f' \
@@ -116,7 +125,7 @@ seqldweather_gif () {
 	# Original main sequence delay was 15
 	# 2014 Dec 09 - after FB thread, slowed to delay=20
 	# 2023 nov 16 - decided to slow to d30 for the main loop
-	gifsicle $TDIR/_tmp_seqldweather_anim.gif -O3 -k 64 -d60 "#0" -d30 "#1" "#2" "#3" "#4" "#5" "#6" "#7" "#8" "#9" "#10" "#11" "#12" "#13" "#14" -d 120 "#15" -o $TDIR/_tmp_seqldweather_anim2.gif
+	gifsicle $TDIR/_tmp_seqldweather_anim.gif -O3 -k 96 -d60 "#0" -d30 "#1" "#2" "#3" "#4" "#5" "#6" "#7" "#8" "#9" "#10" "#11" "#12" "#13" "#14" -d 120 "#15" -o $TDIR/_tmp_seqldweather_anim2.gif
 	mv $TDIR/_tmp_seqldweather_anim2.gif $tfile
 
 	rm $TDIR/_tmp_seqldweather_anim.gif
