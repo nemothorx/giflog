@@ -6,33 +6,10 @@ seqldweather() {
 	tname="${YEAR}-${MONTH}-${DAY}T${TIME}_${rname}"
 	tfile="${TDIR}/$tname"
 
-# this gets the three images composited with right geometry, but not yet colours
-#convert -size 642x644 xc:white \( radar-marbung128km.gif -crop 512x512+6+6 \) -geometry +0+63 -composite \( radar-stapylton128km.gif -crop 512x542+6+22 \) -geometry +138+103 -composite \( thunderstorms-seqld.png -resize 504x501\! -compose multiply \) -geometry +26+0 -composite out.gif
+# TODO: check each input image and only use it if it's new enough
 
-# this fades the black of the thunderstorms out
-#convert -size 642x644 xc:white \( radar-marbung128km.gif -crop 512x512+6+6 \) -geometry +0+63 -composite \( radar-stapylton128km.gif -crop 512x542+6+22 \) -geometry +138+103 -composite \( thunderstorms-seqld.png -fuzz 50% -fill '#c0c0c0' -opaque black -resize 504x501\! -compose multiply \) -geometry +26+0 -composite out.gif
+# note: see git repo history for earlier variations
 
-# this turns the date at the top inverse now...
-#convert -size 642x644 xc:white \( radar-marbung128km.gif -crop 512x512+6+6 \) -geometry +0+63 -composite \( radar-stapylton128km.gif -crop 512x542+6+22 \) -geometry +138+103 -composite \( thunderstorms-seqld.png -fuzz 50% -fill '#c0c0c0' -opaque black -fuzz 0% -fill black -opaque '#dfedf7' -resize 504x501\! -compose multiply \) -geometry +26+0 -composite out.png
-
-# this turns thunderstorms white, and their borders and predictions black. All done?
-#	convert -size 642x644 xc:white \( radar-marbung128km.gif -crop 512x512+6+6 \) -geometry +0+63 -composite \( radar-stapylton128km.gif -crop 512x542+6+22 \) -geometry +138+103 -composite \( thunderstorms-seqld.png -fuzz 50% -fill '#c0c0c0' -opaque black -fuzz 0% -fill black -opaque '#dfedf7' -fill white -opaque '#f5bd8a' -fuzz 5% -fill black -opaque '#cc7833' -fuzz 4% -opaque '#e9a970'  -resize 504x501\! -compose multiply \) -geometry +26+0 -composite seqldweather.png
-
-# here we add colour reduction to 192 cols. This has next to no visual difference, yet reduces final (post pngcrush) size by 66%)
-#	convert -size 642x644 xc:white \( $LASTDIR/radar-marbung128km.gif -crop 512x512+6+6 \) -geometry +0+63 -composite \( $LASTDIR/radar-stapylton128km.gif -crop 512x542+6+22 \) -geometry +138+103 -composite \( $LASTDIR/thunderstorms-seqld.png -fuzz 50% -fill '#c0c0c0' -opaque black -fuzz 0% -fill black -opaque '#dfedf7' -fill white -opaque '#f5bd8a' -fuzz 5% -fill black -opaque '#cc7833' -fuzz 4% -opaque '#e9a970'  -resize 504x501\! -compose multiply \) -geometry +26+0 -composite -dither none -colors 192 ${TDIR}/_tmp_seqldweather.png
-
-# redo the colour swappings for thunderstorm-seqld.png
-#	convert -size 642x644 xc:white \( $LASTDIR/radar-marbung128km.gif -crop 512x512+6+6 \) -geometry +0+63 -composite \( $LASTDIR/radar-stapylton128km.gif -crop 512x542+6+22 \) -geometry +138+103 -composite \( $LASTDIR/thunderstorms-seqld.png -fill '#c0c0c0' -fuzz 50% -opaque black -fuzz 5% -opaque '#ad784e' -fill white -fuzz 0% -opaque '#f5bd8a' -opaque '#e5bc99' -fill black -fuzz 7% -opaque '#dfedf7' -opaque '#eaa96f' -fuzz 25% -opaque '#cc7833' -resize 504x501\! -compose multiply \) -geometry +26+0 -composite -dither none -colors 192 ${TDIR}/_tmp_seqldweather.png
-
-# wacky note: originally outputting to _tmp_${tname} but apparently variable expansion in the final filename changed the behaviour of the final composit. WTF?
-#...therefore, keep it as a static name here (and pngcrush later :)
-
-# TODO: detect if the stapylton is actually generating new images or just repeating it's old, as it does when it's broken. And then auto-switch to the marburg later on top
-# 	convert -size 642x644 xc:white \( $LASTDIR/radar-marburg128km.gif -crop 512x512+6+6 \) -geometry +0+63 -composite \( $LASTDIR/radar-stapylton128km.gif -crop 512x542+6+22 \) -geometry +138+103 -composite \( $LASTDIR/thunderstorms-seqld.png -fill '#c0c0c0' -fuzz 50% -opaque black -fuzz 5% -opaque '#ad784e' -fill white -fuzz 0% -opaque '#f5bd8a' -opaque '#e5bc99' -fill black -opaque '#dfedf7' -fuzz 7% -opaque '#eaa96f' -fuzz 25% -opaque '#cc7833' -resize 504x501\! -compose multiply \) -geometry +26+0 -composite -dither none -colors 192 ${TDIR}/_tmp_seqldweather.png
-#	...this is the same as previous, EXCEPT marburg is layered above stapylton (see 'TODO' above)
-#	convert -size 642x644 xc:white \( $LASTDIR/radar-stapylton128km.gif -crop 512x542+6+22 \) -geometry +138+103 -composite \( $LASTDIR/radar-marburg128km.gif -crop 512x512+6+6 \) -geometry +0+63 -composite \( $LASTDIR/thunderstorms-seqld.png -fill '#c0c0c0' -fuzz 50% -opaque black -fuzz 5% -opaque '#ad784e' -fill white -fuzz 0% -opaque '#f5bd8a' -opaque '#e5bc99' -fill black -opaque '#dfedf7' -fuzz 7% -opaque '#eaa96f' -fuzz 25% -opaque '#cc7833' -resize 504x501\! -compose multiply \) -geometry +26+0 -composite -dither none -colors 192 ${TDIR}/_tmp_seqldweather.png
-#	...this is variation #3, being without marburg at all (may 2023 - the radar is offline pending a few months work, and my "last" has expired off
-#convert -size 642x644 xc:white \( $LASTDIR/radar-stapylton128km.gif -crop 512x542+6+22 \) -geometry +138+103 -composite \( $LASTDIR/thunderstorms-seqld.png -fill '#c0c0c0' -fuzz 50% -opaque black -fuzz 5% -opaque '#ad784e' -fill white -fuzz 0% -opaque '#f5bd8a' -opaque '#e5bc99' -fill black -opaque '#dfedf7' -fuzz 7% -opaque '#eaa96f' -fuzz 25% -opaque '#cc7833' -resize 504x501\! -compose multiply \) -geometry +26+0 -composite -dither none -colors 192 ${TDIR}/_tmp_seqldweather.png
 #   ...this is variation #4. Now sized to 750x750, it adds in stapylton's 256 as a background scaled to suit (also 512 though it's completely overridden by the 256, it's backup, though alignment should be rechecked). Plus marburg as preference at it's resolutions. It's also formatted for readability! --Nemo 9/Nov/2023
 convert -size 750x750 xc:white \
     \( $LASTDIR/radar-stapylton512km.gif -crop 187x187+136+163 \
@@ -89,6 +66,8 @@ convert -size 750x750 xc:white \
     ${TDIR}/_tmp_seqldweather.png
 #
 
+# wacky note: originally outputting to _tmp_${tname} but apparently variable expansion in the final filename changed the behaviour of the final composit. WTF?
+#...therefore, keep it as a static name here (and pngcrush later :)
 
 #	mv $TDIR/_tmp_$tname $tfile 
 	pngcrush -s $TDIR/_tmp_seqldweather.png $tfile && rm $TDIR/_tmp_seqldweather.png
