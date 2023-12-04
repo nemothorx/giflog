@@ -1,0 +1,46 @@
+rivers() {
+
+# montage of river guages, from the sea to the hills
+#
+
+    rname=riverguages.png
+    tname="${YEAR}-${MONTH}-${DAY}T${TIME}_${rname}"
+    tfile="${TDIR}/$tname"
+
+    montage -background grey -border 1 -tile 1x -geometry 900x403+0+0 \
+	$LASTDIR/bom-brisriver-city.png \
+	$LASTDIR/bom-brisriver-goodna.png \
+	$LASTDIR/bom-bremerriver-ipswich.png \
+	$LASTDIR/bom-brisriver-wivenhoe_down.png \
+	$LASTDIR/bom-brisriver-wivenhoe_up.png \
+	$LASTDIR/bom-rockywaterholes.png \
+	$LASTDIR/bom-stableswampck.png \
+	$LASTDIR/bom-oxleyck.png \
+	$LASTDIR/bom-bundamback.png \
+	${TDIR}/_tmp_riverguages.png
+
+    pngcrush -s $TDIR/_tmp_riverguages.png $tfile 2>/dev/null && rm $TDIR/_tmp_riverguages.png
+
+    do_diff	# this generates links in the "last" directory
+    sleep 5
+    [ $(date +%_H) -ge 2 ] && rivers_gif	    # gif from 2am onwards only
+
+}
+
+rivers_gif() {
+    rname=riverguages_anim.gif
+    tname="${YEAR}-${MONTH}-${DAY}T${TIME}_${rname}"
+	# I'd like tname to not have $TIME but mkhtml needs this layout
+    tfile="${TDIR}/$tname"
+
+    convert -loop -0 $(find -L $TDIR -type f -iname \*riverguages.png -not -iname \*T00\* -mmin -1000 | sort ) ${TDIR}/_tmp_riverguages.gif 
+
+
+    gifsicle -U ${TDIR}/_tmp_riverguages.gif -d50 "#0" -d15 "#1--2" -d250 "#-1" -O3 -o $TDIR/_tmp_riverguages_.gif
+
+    rm $TDIR/*riverguages.gif 2>/dev/null   # remove the tmps and previous real
+    mv $TDIR/_tmp_riverguages_.gif $tfile   # rename this to the new real
+
+    do_diff
+}
+
