@@ -8,58 +8,78 @@ seqldweather() {
 
 # TODO: check each input image and only use it if it's new enough
 
-# note: see git repo history for earlier variations
 
-#   ...this is variation #4. Now sized to 750x750, it adds in stapylton's 256 as a background scaled to suit (also 512 though it's completely overridden by the 256, it's backup, though alignment should be rechecked). Plus marburg as preference at it's resolutions. It's also formatted for readability! --Nemo 9/Nov/2023
+# this is variation 5, which breaks each image manipulation into it's own string within a variable, for modular exclusion and adjustment. 
+# it also now makes many images semi-transparent to allow under images to show through
+
+stap512=" ( $LASTDIR/radar-stapylton512km.gif -crop 187x187+136+163 
+        -fill #a0a0a0 
+            -fuzz 25% -opaque black 
+        -channel A -evaluate multiply 0.6 +channel
+        -resize 750x750! ) 
+    -geometry +0+0 -composite"
+marb512=" ( $LASTDIR/radar-marburg512km.gif -crop 187x187+136+163
+        -fill #a0a0a0
+            -fuzz 25% -opaque black
+        -channel A -evaluate multiply 0.6 +channel
+        -resize 750x750! ) 
+    -geometry -140-20 -composite"
+
+stap256="( $LASTDIR/radar-stapylton256km.gif -crop 375x375+11+62
+        -resize 750x750! 
+        -fill #808080
+            -fuzz 25% -opaque black 
+        -channel A -evaluate multiply 0.6 +channel
+    )
+    -geometry +0+0 -composite"
+
+bneap128=" ( $LASTDIR/radar-bneap128km.gif -crop 524x496+0+0 
+        -fuzz 0% -transparent #c0c0c0
+        -channel A -evaluate multiply 0.6 +channel
+    ) 
+    -geometry +218+64 -composite "
+stap128=" ( $LASTDIR/radar-stapylton128km.gif -crop 524x542+0+22 
+        -fuzz 0% -transparent #c0c0c0 
+        -channel A -evaluate multiply 0.6 +channel
+        ) 
+    -geometry +239+159 -composite "
+marb128=" ( $LASTDIR/radar-marburg128km.gif -crop 524x496+0+22 
+        -fuzz 0% -transparent #c0c0c0 
+        -channel A -evaluate multiply 0.6 +channel
+        ) 
+    -geometry +102+135 -composite "
+
+tstorms=" ( $LASTDIR/thunderstorms-seqld.png 
+        -fill #c0c0c0
+            -fuzz 50% -opaque black 
+        -fill white 
+            -fuzz 0% -opaque #f2efe4
+                     -opaque #dfedf7
+                     -opaque #e5dec9
+                     -opaque #bfdbee
+                     -opaque #f2eee3
+                     -opaque #deedf6
+                     -opaque #f5bd8a
+                     -opaque #fbb071
+                     -opaque #e5bc99
+                     -opaque #f2decc
+        -fill black 
+                      -opaque #dfedf7
+            -fuzz 7%  -opaque #eaa96f
+            -fuzz 25% -opaque #cc7833
+        -resize 504x501! 
+        -compose multiply ) 
+    -geometry +133+56 -composite "
+
+# the convert command is now just a list of those subcommand strings
 convert -size 750x750 xc:white \
-    \( $LASTDIR/radar-stapylton512km.gif -crop 187x187+136+163 \
-        -fill '#a0a0a0' \
-            -fuzz 25% -opaque black \
-        -resize 750x750\! \) \
-    -geometry +0+0 -composite \
-    \( $LASTDIR/radar-marburg512km.gif -crop 187x187+136+163 \
-        -fill '#a0a0a0' \
-            -fuzz 25% -opaque black \
-        -resize 750x750\! \) \
-    -geometry -140-20 -composite \
-    \( $LASTDIR/radar-stapylton256km.gif -crop 375x375+11+62 \
-        -resize 750x750\! \
-        -fill '#808080' \
-            -fuzz 25% -opaque black \
-        -alpha set -channel A -evaluate set 50% +channel \
-    \) \
-    -geometry +0+0 -composite \
-    \( $LASTDIR/radar-bneap128km.gif -crop 524x564+0+0 \
-        -fuzz 0% -transparent '#c0c0c0' \
-    \) \
-    -geometry +218+64 -composite \
-    \( $LASTDIR/radar-stapylton128km.gif -crop 524x542+0+22 \
-        -fuzz 0% -transparent '#c0c0c0' \) \
-    -geometry +239+159 -composite \
-    \( $LASTDIR/radar-marburg128km.gif -crop 524x496+0+22 \
-        -fuzz 0% -transparent '#c0c0c0' \) \
-    -geometry +102+135 -composite \
-    \( $LASTDIR/thunderstorms-seqld.png \
-        -fill '#c0c0c0' \
-            -fuzz 50% -opaque black \
-        -fill white \
-            -fuzz 0% -opaque '#f2efe4' \
-                     -opaque '#dfedf7' \
-                     -opaque '#e5dec9' \
-                     -opaque '#bfdbee' \
-                     -opaque '#f2eee3' \
-                     -opaque '#deedf6' \
-                     -opaque '#f5bd8a' \
-                     -opaque '#fbb071' \
-		     -opaque '#efbc99' \
-                     -opaque '#f2decc' \
-        -fill black \
-                      -opaque '#dfedf7' \
-            -fuzz 7%  -opaque '#eaa96f' \
-            -fuzz 25% -opaque '#cc7833' \
-        -resize 504x501\! \
-        -compose multiply \) \
-    -geometry +133+56 -composite \
+    $stap512 \
+    $marb512 \
+    $stap256 \
+    $bneap128 \
+    $stap128 \
+    $marb128 \
+    $tstorms \
     -pointsize 18 -gravity NorthWest \
     -font /home/nemo/lib/fonts/MonaspaceRadon-WideMedium.otf \
     -stroke '#0003' -strokewidth 4 -annotate +20+20 "${YEAR}-${MONTH}-${DAY} ${TIME} ${TZONE}" \
