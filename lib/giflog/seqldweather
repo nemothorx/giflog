@@ -50,7 +50,9 @@ convert -size 750x750 xc:white \
                      -opaque '#f2eee3' \
                      -opaque '#deedf6' \
                      -opaque '#f5bd8a' \
+                     -opaque '#fbb071' \
 		     -opaque '#efbc99' \
+                     -opaque '#f2decc' \
         -fill black \
                       -opaque '#dfedf7' \
             -fuzz 7%  -opaque '#eaa96f' \
