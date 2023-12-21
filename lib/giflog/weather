@@ -26,10 +26,12 @@ weather() {
   <tr>
     <td colspan=2>
 <a href='/giflog/last/heatwave_anim.gif'><img src='/giflog/last/heatwave_anim.gif'</a>
-<br>
-<hr>
-<br>
+  </td>
+</tr>
+<tr>
+  <td valign=top>
 <a href='/giflog/last/seqldweather.png'><img width=320 src='/giflog/last/seqldweather.png'></a>
+<a href='/giflog/last/bomwarn-seqld.png'><img width=320 src='/giflog/last/bomwarn-seqld.png'></a>
 <a href='/giflog/last/SHGMSCOL.JPG'><img width=320 src='$(lastpath2permalink SHGMSCOL.JPG)'></a>
 <a href='/giflog/last/bom-seqld.gif'><img width=320 src='$(lastpath2permalink bom-seqld.gif)'></a>
 <a href='/giflog/last/bom-qld.gif'><img width=320 src='$(lastpath2permalink bom-qld.gif)'></a>
@@ -37,6 +39,9 @@ weather() {
 <a href='/giflog/last/heatmap_au-region.png'><img width=320 src='$(lastpath2permalink heatmap_au-region.png)'></a>
 <a href='/giflog/last/heatmap_world.png'><img width=320 src='$(lastpath2permalink heatmap_world.png)'></a>
 <a href='/giflog/last/maxtemp_aus.gif'><img width=320 src='$(lastpath2permalink maxtemp_aus.gif)'></a>
+    </td>
+    <td>
+<a href='/giflog/last/riverguages_anim.gif'><img width=451 height=1823 src='/giflog/last/riverguages_anim.gif'</a>
     </td>
 </tr>
 </table>
