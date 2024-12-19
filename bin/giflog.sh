@@ -52,7 +52,7 @@ do_diff () {
 			do_log "+(new) $tfile"
 			if [ -n "$metadata" ] ; then
 				modtime=$(echo "$metadata" | grep "^Last-Modified: ")
-				touch -d "${modtime:15:100}" "$tfile"
+				[ -n "$modtime" ] && touch -d "${modtime:15:100}" "$tfile"
 			fi
 			ln -sf "../$CHRONODIR/$tname" "$LASTDIR/$rname"
 			source $LIBDIR/mkhtml

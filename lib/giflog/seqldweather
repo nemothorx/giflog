@@ -38,6 +38,8 @@ bneap128=" ( $LASTDIR/radar-bneap128km.gif -crop 524x496+0+0
         -channel A -evaluate multiply 0.6 +channel
     ) 
     -geometry +218+64 -composite "
+bneap128="" # this stopped 10th Oct? ageed out 2nd Nov and made the gif fail. 
+# ...keeping the "bneap128" in the order later on and making it empty here seems sanest for the moment
 stap128=" ( $LASTDIR/radar-stapylton128km.gif -crop 524x542+0+22 
         -fuzz 0% -transparent #c0c0c0 
         -channel A -evaluate multiply 0.6 +channel
